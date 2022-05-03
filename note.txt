@@ -1,0 +1,25 @@
+Nextjs is like react - run "npm run dev"
+
+We need to create 2 fns connect and execute
+Normal react would recognize window object but Nextjs wont so we need to do some workaround
+
+    Make a button that will only exist if we are not connected so use useState
+    const [isConnected, setIsConnected] = useState(false);
+
+    we can do let isConnected = false 
+    Difference is useState help us to keep state between renders
+
+    inside the request method in connect()
+    setIsConnected(true); - we also use this connection to get a provider
+
+    let connectedProvider = new ethers.provider.web3Provider(window.ethereum); 
+    setSigner(connectedProvider.getSigner()); - using provider we get the signer 
+
+    creating button for these functions
+        <button onClick={() => connect()}>connect</button>
+    
+    To only show the button if you are connected
+    {isConnected ? ("Connected!!") : (<button onClick={() => connect()}>connect</button>)}
+
+Drawback is that when we switch pages we want the states to be saved like signer's etc and we dont want to clutter
+everything with more code so we use other packages

@@ -1,25 +1,49 @@
 Nextjs is like react - run "npm run dev"
 
-We need to create 2 fns connect and execute
-Normal react would recognize window object but Nextjs wont so we need to do some workaround
+We need to create 2 fns connect and execute - same way as in html-js-ethers
+Normal react would recognize window object but Nextjs wont so we need to do some workaround 
 
-    Make a button that will only exist if we are not connected so use useState
+#   Make a button that will only exist if we are not connected ie once we are connected the 
+    button should disappear so we need to save the state[ie whether connected or not] so later
+    we can use that state to determine whether to display the button or not - so use useState
     const [isConnected, setIsConnected] = useState(false);
+        So now when we are connect change the state of setIsConnected to true
 
-    we can do let isConnected = false 
+    we can do let isConnected = false; and achieve the same but, 
     Difference is useState help us to keep state between renders
 
     inside the request method in connect()
     setIsConnected(true); - we also use this connection to get a provider
 
+    So if setIsConnected is true we get the provider by:
     let connectedProvider = new ethers.provider.web3Provider(window.ethereum); 
-    setSigner(connectedProvider.getSigner()); - using provider we get the signer 
 
-    creating button for these functions
+    since now we have the provider we can get the signer as well:
+    setSigner(connectedProvider.getSigner());  
+        store the state of signer: 
+            const [signer, setSigner] = useState();
+            Since signer fn is not in the execute fn. when we click the execute fn the execute fn 
+            should know who the signer is so save it into a state. So now whenever the execute fn 
+            is called the fn knows who the signer is 
+        or
+            set the provider and signer inside the execute fn
+
+#   Now in the execute fn declare the contractAddress and abi. Then declare the contract 
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+#   creating button for these functions
         <button onClick={() => connect()}>connect</button>
     
     To only show the button if you are connected
-    {isConnected ? ("Connected!!") : (<button onClick={() => connect()}>connect</button>)}
+        {isConnected ? ("Connected!!") : (<button onClick={() => connect()}>connect</button>)}
+
+    To show only the execute button once we are connected
+        {isConnected ? (
+        <>
+          "Connected!!"
+          <button onClick={() => execute()}>execute</button>
+        </>
+      ) : (button onClick={() => connect()}>connect</button>)}
 
 Drawback is that when we switch pages we want the states to be saved like signer's etc and we dont want to clutter
 everything with more code so we use other packages
